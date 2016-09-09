@@ -1,51 +1,79 @@
-
-// For those who want the bleeding edge
 buildscript {
-  repositories {
-    jcenter()
-    maven {
-      name = "forge"
-      url = "http://files.minecraftforge.net/maven"
-    }
-  }
-  dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT' }
+	repositories {
+		jcenter()
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+	}
+	dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT' }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-//apply plugin: 'io.franzbecker.gradle-lombok' version '1.6'
+ext.buildnumber = 0
+if (System.getenv('BUILD_NUMBER') != null)
+	project.buildnumber = System.getenv('BUILD_NUMBER')
+else {
+	try {
+		ext.buildnumber += "_" + "git rev-parse --abbrev-ref HEAD".execute().text.trim();
+		ext.buildnumber += "_" + "git rev-parse --short HEAD".execute().text.trim();
+	} catch (all) {}
+	logger.lifecycle "No build number detected, setting to ${ext.buildnumber}"
+}
 
-version = "1.0.0-b1"
-group = "archalchemy"
+configurations {
+  compile.extendsFrom exportedCompile
+}
 
-archivesBaseName = "UndergrounOcean"
+version = "${mod_version}.${buildnumber}"
+group= "${modid}"
+archivesBaseName = "${modid}"
+if (project.hasProperty('mod_appendix'))
+	version += "_${project.mod_appendix}"
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+// Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = "1.8"
+compileJava { sourceCompatibility = targetCompatibility = "1.8" }
 
 minecraft {
-  version = "1.9.4-12.17.0.1946"
-  runDir = "run"
-  
-  mappings = "snapshot_20160518"
+	version = "1.10.2-12.18.1.2076"
+	runDir = "run"
+
+	mappings = "snapshot_20160518"
+}
+
+repositories {
+	maven {
+		name='JEI'
+		url "http://dvs1.progwml6.com/files/maven"
+	}
+	maven {
+		name='WAILA'
+		url = "http://mobiusstrip.eu/maven"
+	}
 }
 
 dependencies {
+	deobfCompile "mezz.jei:jei_${mcversion}:${jei_version}"
+	deobfCompile "mcp.mobius.waila:Waila:${waila_version}"
+
+	compile "org.projectlombok:lombok:1.16.10"
+}
+
+jar.doFirst {
 }
 
 processResources
 {
-  // this will ensure that this task is redone when the versions change.
-  inputs.property "version", project.version
-  inputs.property "mcversion", project.minecraft.version
-  
-  // replace stuff in mcmod.info, nothing else
-  from(sourceSets.main.resources.srcDirs) {
-    include 'mcmod.info'
-    
-    // replace version and mcversion
-    expand 'version':project.version, 'mcversion':project.minecraft.version
-  }
-  
-  // copy everything else, thats not the mcmod.info
-  from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
+	inputs.property "version", project.version
+	inputs.property "mcversion", project.minecraft.version
+
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
+
+		// replace version and mcversion
+		expand 'version':project.version, 'mcversion':project.minecraft.version
+	}
+
+	from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
 }
