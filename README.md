@@ -1,4 +1,5 @@
 Underground Ocean
 ----------------
-Minecraft modification that generates large nether-like caverns in world. With default configuration it generates them near lava level fully filled with water. Configurable parameters are: height of caves, size, liquid and liquid level (water / lava).
+Minecraft modification that generates large partially filled with water caves in world.
+Curse page: https://minecraft.curseforge.com/projects/undergroundocean
 
