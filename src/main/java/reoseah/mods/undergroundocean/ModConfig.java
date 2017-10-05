@@ -1,4 +1,4 @@
-package undergroundocean.config;
+package reoseah.mods.undergroundocean;
 
 import java.io.File;
 import java.util.HashMap;
@@ -10,15 +10,13 @@ import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLLog;
 
-public class UCConfig {
-	public static boolean debug = false;
+public class ModConfig {
 	public static int[] dimensions;
 	public static OceanConfig[] configs;
 	public static Map<Integer, OceanConfig> map = new HashMap<>();
 
 	public static void load(Configuration config, File configDir) {
 		config.load();
-		debug = config.getBoolean("PrintCoords", "Debug", false, "Prints coords in log when placed something");
 
 		dimensions = config
 				.get("Generation", "Dimension IDs", new int[] { 0 },

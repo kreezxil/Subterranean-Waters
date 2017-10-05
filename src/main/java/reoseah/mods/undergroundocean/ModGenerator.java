@@ -1,4 +1,4 @@
-package undergroundocean.gen;
+package reoseah.mods.undergroundocean;
 
 import java.util.Random;
 
@@ -12,12 +12,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
-import net.minecraftforge.fml.common.FMLLog;
-import reoseah.rgen.util.IPrimeWorldGenerator;
-import undergroundocean.config.UCConfig;
-import undergroundocean.config.UCConfig.OceanConfig;
+import reoseah.mods.undergroundocean.ModConfig.OceanConfig;
 
-public class WorldPrimeGenUndergroundOcean implements IPrimeWorldGenerator {
+public class ModGenerator {
 	private static final IBlockState WATER = Blocks.WATER.getDefaultState();
 	private static final IBlockState AIR = Blocks.AIR.getDefaultState();
 	private static final int chunkSizeXZ = 16;
@@ -50,20 +47,19 @@ public class WorldPrimeGenUndergroundOcean implements IPrimeWorldGenerator {
 
 	static OceanConfig config;
 
-	@Override
 	public void generate(ChunkPrimer primer, World world, Random random, int chunkX, int chunkZ,
 			IChunkGenerator generator) {
-		if (!ArrayUtils.contains(UCConfig.dimensions, world.provider.getDimension()))
+		if (!ArrayUtils.contains(ModConfig.dimensions, world.provider.getDimension()))
 			return;
 
-		config = UCConfig.map.get(world.provider.getDimension());
+		config = ModConfig.map.get(world.provider.getDimension());
 
 		initGenerators(world, random);
 
 		// generator runs before biomes in world are setted and biomes map is
 		// not obtainable in any other way,
 		// so we have to generate them if we want to use them
-		tempArrayBiomes = world.getBiomeProvider().loadBlockGeneratorData(this.tempArrayBiomes, chunkX * 16,
+		tempArrayBiomes = world.getBiomeProvider().getBiomesForGeneration(this.tempArrayBiomes, chunkX * 16,
 				chunkZ * 16, 16, 16);
 
 		setChunk(chunkX, chunkZ, primer);
@@ -134,7 +130,7 @@ public class WorldPrimeGenUndergroundOcean implements IPrimeWorldGenerator {
 	}
 
 	private static double interpolateLinear(double value1, double value2, double k) {
-		return value1 + (value2 - value1) * MathHelper.clamp_double(k, 0.0, 1.0);
+		return value1 + (value2 - value1) * MathHelper.clamp(k, 0.0, 1.0);
 	}
 
 	private void setChunk(int x, int z, ChunkPrimer primer) {
@@ -183,20 +179,7 @@ public class WorldPrimeGenUndergroundOcean implements IPrimeWorldGenerator {
 									int worldY = shiftY + sampleY * blockPerSampleY;
 									int worldZ = shiftZ + sampleZ * blocksPerSampleXZ;
 
-									// Biome biome = tempArrayBiomes[worldX +
-									// worldZ * 16];
-									//
-									// if (BiomeDictionary.isBiomeOfType(biome,
-									// Type.OCEAN)) {
-									// currentValue = currentValue * 0.8 -
-									// Math.max(0, worldY - 35) / 2;
-									// }
-									// FMLLog.info("%d %d %d", worldX, worldY, worldZ);
-									
 									IBlockState block = worldY > config.liquidLevel ? AIR : WATER;
-									if(block == WATER && UCConfig.debug) {
-										System.out.println("" + (x * 16 + worldX) + " " + worldY + " " + z * 16);
-									}
 									primer.setBlockState(worldX, worldY, worldZ, block);
 								}
 
