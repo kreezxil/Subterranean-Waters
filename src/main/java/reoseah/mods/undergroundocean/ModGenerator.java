@@ -8,7 +8,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
@@ -17,18 +16,6 @@ import reoseah.mods.undergroundocean.ModConfig.OceanConfig;
 public class ModGenerator {
 	private static final IBlockState WATER = Blocks.WATER.getDefaultState();
 	private static final IBlockState AIR = Blocks.AIR.getDefaultState();
-	private static final int chunkSizeXZ = 16;
-	private static final int chunkSizeY = 128;
-
-	private static final int samplesXZ = 2;
-	private static final int blocksPerSampleXZ = chunkSizeXZ / samplesXZ;
-	private static final int samplesXPlusOne = samplesXZ + 1;
-
-	// We go from Y=0 upwards interpolating current and next values,
-	// so there is 33 instead 32 y-samples to correctly interpolate last one.
-	private static final int samplesY = 33;
-	private static final int blockPerSampleY = chunkSizeY / (samplesY - 1); // 4
-	private static final int samplesZPlusOne = samplesXZ + 1;
 
 	private boolean initialized = false;
 
@@ -43,46 +30,36 @@ public class ModGenerator {
 	private double[] tempArrayStoneMask;
 	private double[] tempArrayStoneMask2;
 	private double[] tempArrayStone;
-	private Biome[] tempArrayBiomes;
 
 	static OceanConfig config;
 
 	public void generate(ChunkPrimer primer, World world, Random random, int chunkX, int chunkZ,
 			IChunkGenerator generator) {
-		if (!ArrayUtils.contains(ModConfig.dimensions, world.provider.getDimension()))
-			return;
+		if (ArrayUtils.contains(ModConfig.dimensions, world.provider.getDimension())) {
 
-		config = ModConfig.map.get(world.provider.getDimension());
+			config = ModConfig.map.get(world.provider.getDimension());
 
-		initGenerators(world, random);
+			if (!initialized) {
+				this.random = new Random(world.getSeed());
 
-		// generator runs before biomes in world are setted and biomes map is
-		// not obtainable in any other way,
-		// so we have to generate them if we want to use them
-		tempArrayBiomes = world.getBiomeProvider().getBiomesForGeneration(this.tempArrayBiomes, chunkX * 16,
-				chunkZ * 16, 16, 16);
+				this.noiseGenStone1 = new NoiseGeneratorOctaves(this.random, 16);
+				this.noiseGenStone2 = new NoiseGeneratorOctaves(this.random, 16);
+				this.noiseGenStoneMask = new NoiseGeneratorOctaves(this.random, 8);
+				this.noiseGenStoneMask2 = new NoiseGeneratorOctaves(this.random, 8);
 
-		setChunk(chunkX, chunkZ, primer);
-	}
+				tempArrayStone = new double[3 * 33 * 3];
 
-	private void initGenerators(World world, Random random) {
-		if (!initialized) {
-			this.random = new Random(world.getSeed());
+				initialized = true;
+			}
 
-			this.noiseGenStone1 = new NoiseGeneratorOctaves(this.random, 16);
-			this.noiseGenStone2 = new NoiseGeneratorOctaves(this.random, 16);
-			this.noiseGenStoneMask = new NoiseGeneratorOctaves(this.random, 8);
-			this.noiseGenStoneMask2 = new NoiseGeneratorOctaves(this.random, 8);
-
-			tempArrayStone = new double[samplesXPlusOne * samplesY * samplesZPlusOne];
-
-			initialized = true;
+			doGenerate(chunkX, chunkZ, primer);
 		}
 	}
 
 	private void initNoise(int shiftX, int shiftY, int shiftZ, int sizeX, int sizeY, int sizeZ) {
 		double noiseScaleHorisontal = 684.412D * 2.0D;
 		double noiseScaleVertical = 684.412D;
+
 		tempArrayStoneMask = noiseGenStoneMask.generateNoiseOctaves(tempArrayStoneMask, shiftX, shiftY, shiftZ, sizeX,
 				sizeY, sizeZ, noiseScaleHorisontal / 80.0D, noiseScaleVertical / 160.0D, noiseScaleHorisontal / 80.0D);
 		tempArrayStoneMask2 = noiseGenStoneMask2.generateNoiseOctaves(tempArrayStoneMask2, shiftX, shiftY, shiftZ,
@@ -133,51 +110,43 @@ public class ModGenerator {
 		return value1 + (value2 - value1) * MathHelper.clamp(k, 0.0, 1.0);
 	}
 
-	private void setChunk(int x, int z, ChunkPrimer primer) {
-		initNoise(x * samplesXZ, 0, z * samplesXZ, samplesXPlusOne, samplesY, samplesZPlusOne);
+	private void doGenerate(int x, int z, ChunkPrimer primer) {
+		initNoise(x * 2, 0, z * 2, 3, 33, 3);
 
-		for (int sampleX = 0; sampleX < samplesXZ; ++sampleX) {
-			for (int sampleZ = 0; sampleZ < samplesXZ; ++sampleZ) {
-				for (int sampleY = 0; sampleY < samplesY - 18; ++sampleY) {
-					double bottomNearLeft = tempArrayStone[((sampleX + 0) * samplesZPlusOne + sampleZ + 0) * samplesY
-							+ sampleY + 0];
-					double bottomNearRight = tempArrayStone[((sampleX + 0) * samplesZPlusOne + sampleZ + 1) * samplesY
-							+ sampleY + 0];
-					double bottomFarLeft = tempArrayStone[((sampleX + 1) * samplesZPlusOne + sampleZ + 0) * samplesY
-							+ sampleY + 0];
-					double bottomFarRight = tempArrayStone[((sampleX + 1) * samplesZPlusOne + sampleZ + 1) * samplesY
-							+ sampleY + 0];
+		for (int sampleX = 0; sampleX < 2; ++sampleX) {
+			for (int sampleZ = 0; sampleZ < 2; ++sampleZ) {
+				for (int sampleY = 0; sampleY < 33 - 18; ++sampleY) {
+					double bottomNearLeft = tempArrayStone[((sampleX + 0) * 3 + sampleZ + 0) * 33 + sampleY + 0];
+					double bottomNearRight = tempArrayStone[((sampleX + 0) * 3 + sampleZ + 1) * 33 + sampleY + 0];
+					double bottomFarLeft = tempArrayStone[((sampleX + 1) * 3 + sampleZ + 0) * 33 + sampleY + 0];
+					double bottomFarRight = tempArrayStone[((sampleX + 1) * 3 + sampleZ + 1) * 33 + sampleY + 0];
 
-					double topNearLeft = tempArrayStone[((sampleX + 0) * samplesZPlusOne + sampleZ + 0) * samplesY
-							+ sampleY + 1];
-					double topNearRight = tempArrayStone[((sampleX + 0) * samplesZPlusOne + sampleZ + 1) * samplesY
-							+ sampleY + 1];
-					double topFarLeft = tempArrayStone[((sampleX + 1) * samplesZPlusOne + sampleZ + 0) * samplesY
-							+ sampleY + 1];
-					double topFarRight = tempArrayStone[((sampleX + 1) * samplesZPlusOne + sampleZ + 1) * samplesY
-							+ sampleY + 1];
+					double topNearLeft = tempArrayStone[((sampleX + 0) * 3 + sampleZ + 0) * 33 + sampleY + 1];
+					double topNearRight = tempArrayStone[((sampleX + 0) * 3 + sampleZ + 1) * 33 + sampleY + 1];
+					double topFarLeft = tempArrayStone[((sampleX + 1) * 3 + sampleZ + 0) * 33 + sampleY + 1];
+					double topFarRight = tempArrayStone[((sampleX + 1) * 3 + sampleZ + 1) * 33 + sampleY + 1];
 
-					double dNearLeft = (topNearLeft - bottomNearLeft) / blockPerSampleY;
-					double dNearRight = (topNearRight - bottomNearRight) / blockPerSampleY;
-					double dFarLeft = (topFarLeft - bottomFarLeft) / blockPerSampleY;
-					double dFarRight = (topFarRight - bottomFarRight) / blockPerSampleY;
+					double dNearLeft = (topNearLeft - bottomNearLeft) / 4;
+					double dNearRight = (topNearRight - bottomNearRight) / 4;
+					double dFarLeft = (topFarLeft - bottomFarLeft) / 4;
+					double dFarRight = (topFarRight - bottomFarRight) / 4;
 
-					for (int shiftY = 0; shiftY < blockPerSampleY; ++shiftY) {
+					for (int shiftY = 0; shiftY < 4; ++shiftY) {
 						double currentLeft = bottomNearLeft;
 						double currentRight = bottomNearRight;
-						double dXLeft = (bottomFarLeft - bottomNearLeft) / blocksPerSampleXZ;
-						double dXRight = (bottomFarRight - bottomNearRight) / blocksPerSampleXZ;
+						double dXLeft = (bottomFarLeft - bottomNearLeft) / 18;
+						double dXRight = (bottomFarRight - bottomNearRight) / 18;
 
-						for (int shiftX = 0; shiftX < blocksPerSampleXZ; ++shiftX) {
+						for (int shiftX = 0; shiftX < 18; ++shiftX) {
 							double currentValue = currentLeft;
-							double dZ = (currentRight - currentLeft) / blocksPerSampleXZ;
+							double dZ = (currentRight - currentLeft) / 18;
 
-							for (int shiftZ = 0; shiftZ < blocksPerSampleXZ; ++shiftZ) {
+							for (int shiftZ = 0; shiftZ < 18; ++shiftZ) {
 
 								if (currentValue > 0D) {
-									int worldX = shiftX + sampleX * blocksPerSampleXZ;
-									int worldY = shiftY + sampleY * blockPerSampleY;
-									int worldZ = shiftZ + sampleZ * blocksPerSampleXZ;
+									int worldX = shiftX + sampleX * 18;
+									int worldY = shiftY + sampleY * 4;
+									int worldZ = shiftZ + sampleZ * 18;
 
 									IBlockState block = worldY > config.liquidLevel ? AIR : WATER;
 									primer.setBlockState(worldX, worldY, worldZ, block);

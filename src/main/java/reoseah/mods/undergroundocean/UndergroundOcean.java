@@ -27,6 +27,4 @@ public class UndergroundOcean {
 		generator.generate(event.getPrimer(), event.getWorld(), new Random(event.getWorld().getSeed()), event.getX(),
 				event.getZ(), event.getGenerator());
 	}
-
-	
 }
