@@ -150,7 +150,14 @@ public class ModGenerator {
 									int worldZ = shiftZ + sampleZ * 18;
 
 									IBlockState block = worldY > config.liquidLevel ? AIR : WATER;
-									primer.setBlockState(worldX, worldY, worldZ, block);
+									
+									try {
+										primer.setBlockState(worldX, worldY, worldZ, block);
+									} catch(Exception e) {
+//										System.out.println(e.getMessage());
+//										System.out.println("values were");
+//										System.out.println("WorldX="+worldX+", WorldY="+worldY+", WorldZ="+worldZ);
+									}
 								}
 
 								currentValue += dZ;
