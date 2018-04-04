@@ -56,20 +56,20 @@ public class ModConfig {
 			config.load();
 
 			config.addCustomCategoryComment("GenerationVariables",
-					"Height changes with step of 4 during noise generation. So 32 here ~ 128 in world.");
+					"Height changes with step of 4 during noise generation. So 32 here ~ 128 in world. Some of these values are causing striations.");
 
 			lowLimit = config.getInt("LowLimit", "GenerationVariables", 6, 1, 33,
 					"Height at which noise value begins to halt.");
 			lowOverheadLimit = config.getInt("LowOverheadLimit", "GenerationVariables", 3, 1, 32,
 					"Height at which noise is guaranteed to halt.");
 
-			highLimit = config.getInt("HighLimit", "GenerationVariables", 16, 0, 32,
+			highLimit = config.getInt("HighLimit", "GenerationVariables", 9, 0, 32,
 					"Height at which noise value begins to halt.");
-			highOverheadLimit = config.getInt("HighOverheadLimit", "GenerationVariables", 30, 1, 32,
+			highOverheadLimit = config.getInt("HighOverheadLimit", "GenerationVariables", 12, 1, 32,
 					"Height at which noise is guaranteed to halt.");
 
-			noiseSummand = config.getInt("NoiseSummand", "GenerationVariables", 16, -100, 100,
-					"Value simply added to noise before height controling, allows to control size of caverns.");
+			noiseSummand = config.getInt("NoiseSummand", "GenerationVariables", -8, -100, 100,
+					"Value simply added to noise before height controling, allows to control size of caverns. Any value above -3 yield enormous caverns.");
 
 			liquidLevel = config.getInt("LiquidLevel", "GenerationVariables", 45, 1, 128,
 					"Water level. Actual Y-coordinate in world.");
