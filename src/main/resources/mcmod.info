@@ -1,0 +1,16 @@
+[
+{
+  "modid": "subterraneanwaters",
+  "name": "Subterranean Waters",
+  "description": "Small mod that adds large caverns filled with water to world generation.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["kreezxil"],
+  "credits": "Thanks to Reoseah for the original MIT Licensed version of this mod known as Underground Ocean",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
