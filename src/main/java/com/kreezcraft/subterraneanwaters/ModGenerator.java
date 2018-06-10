@@ -116,7 +116,7 @@ public class ModGenerator {
 
 		for (int sampleX = 0; sampleX < 2; ++sampleX) {
 			for (int sampleZ = 0; sampleZ < 2; ++sampleZ) {
-				for (int sampleY = 0; sampleY < 33 - 18; ++sampleY) {
+				for (int sampleY = 0; sampleY <  33 - 8; ++sampleY) { // the 8 was 18 b4
 					double bottomNearLeft = tempArrayStone[((sampleX + 0) * 3 + sampleZ + 0) * 33 + sampleY + 0];
 					double bottomNearRight = tempArrayStone[((sampleX + 0) * 3 + sampleZ + 1) * 33 + sampleY + 0];
 					double bottomFarLeft = tempArrayStone[((sampleX + 1) * 3 + sampleZ + 0) * 33 + sampleY + 0];
@@ -135,29 +135,25 @@ public class ModGenerator {
 					for (int shiftY = 0; shiftY < 4; ++shiftY) {
 						double currentLeft = bottomNearLeft;
 						double currentRight = bottomNearRight;
-						double dXLeft = (bottomFarLeft - bottomNearLeft) / 18;
-						double dXRight = (bottomFarRight - bottomNearRight) / 18;
+						double dXLeft = (bottomFarLeft - bottomNearLeft) / 8; // 8 was 18 b4
+						double dXRight = (bottomFarRight - bottomNearRight) / 8; // 8 was 18 b4
 
-						for (int shiftX = 0; shiftX < 18; ++shiftX) {
+						for (int shiftX = 0; shiftX < 8; ++shiftX) { //16 was 18 b4
 							double currentValue = currentLeft;
-							double dZ = (currentRight - currentLeft) / 18;
+							double dZ = (currentRight - currentLeft) / 16; // 16 was 18 b4
 
-							for (int shiftZ = 0; shiftZ < 18; ++shiftZ) {
+							for (int shiftZ = 0; shiftZ < 8; ++shiftZ) { //16 was 18 b4
 
 								if (currentValue > 0D) {
-									int worldX = shiftX + sampleX * 18;
+									int worldX = shiftX + sampleX * 8; // 4 was 18 b4
 									int worldY = shiftY + sampleY * 4;
-									int worldZ = shiftZ + sampleZ * 18;
+									int worldZ = shiftZ + sampleZ * 8; // 4 was 18 b4
 
 									IBlockState block = worldY > config.liquidLevel ? AIR : WATER;
 									
-									try {
-										primer.setBlockState(worldX, worldY, worldZ, block);
-									} catch(Exception e) {
-//										System.out.println(e.getMessage());
-//										System.out.println("values were");
-//										System.out.println("WorldX="+worldX+", WorldY="+worldY+", WorldZ="+worldZ);
-									}
+									//System.out.println("XYZ="+worldX+","+worldY+","+worldZ);
+
+									primer.setBlockState(worldX, worldY, worldZ, block);
 								}
 
 								currentValue += dZ;

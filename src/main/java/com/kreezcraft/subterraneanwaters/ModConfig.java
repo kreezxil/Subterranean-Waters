@@ -31,7 +31,7 @@ public class ModConfig {
 				DimensionType dimension = DimensionType.getById(dimID);
 				String name = dimension.getName();
 
-				File dimFile = new File(configDir, "UndergroundOcean/" + name + ".cfg");
+				File dimFile = new File(configDir, "SubterraneanWaters/" + name + ".cfg");
 				Configuration dimConfig = new Configuration(dimFile);
 
 				configs[i] = new OceanConfig();
