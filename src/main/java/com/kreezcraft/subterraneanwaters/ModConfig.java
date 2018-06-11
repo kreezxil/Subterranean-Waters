@@ -12,12 +12,15 @@ import net.minecraftforge.fml.common.FMLLog;
 
 public class ModConfig {
 	public static int[] dimensions;
+	public static String[] exclude;
 	public static OceanConfig[] configs;
 	public static Map<Integer, OceanConfig> map = new HashMap<>();
 
 	public static void load(Configuration config, File configDir) {
 		config.load();
 
+		exclude = config.getStringList("Biomes", "Exclude these Biomes. Use title case.", new String[] {"Deep Ocean","Ocean" }, "Biomes to not generate in.");
+		
 		dimensions = config
 				.get("Generation", "Dimension IDs", new int[] { 0 },
 						"Dimensions to generate in. Configuration file will be created for each dimension on startup. ")

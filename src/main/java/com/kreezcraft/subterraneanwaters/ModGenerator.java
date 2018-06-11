@@ -36,6 +36,7 @@ public class ModGenerator {
 
 	public void generate(ChunkPrimer primer, World world, Random random, int chunkX, int chunkZ,
 			IChunkGenerator generator) {
+	
 		if (ArrayUtils.contains(ModConfig.dimensions, world.provider.getDimension())) {
 
 			config = ModConfig.map.get(world.provider.getDimension());
