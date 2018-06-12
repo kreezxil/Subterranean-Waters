@@ -109,7 +109,7 @@ public class ModGenerator {
 	}
 
 	private static double interpolateLinear(double value1, double value2, double k) {
-		return value1 + (value2 - value1) * MathHelper.clamp(k, 0.0, 1.0);
+		return value1 + (value2 - value1) * MathHelper.clamp_double(k, 0.0, 1.0);
 	}
 
 	private void doGenerate(int x, int z, ChunkPrimer primer) {
