@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "subterranaenwaters", name = "Subterranean Waters", version = "@VERSION@")
+@Mod(modid = "subterranaenwaters", name = "Subterranean Waters", version = "@VERSION@", acceptableRemoteVersions = "*")
 public class SubterraneanWaters {
 	public static final ModGenerator generator = new ModGenerator();
 
