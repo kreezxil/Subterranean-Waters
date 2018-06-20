@@ -4,7 +4,7 @@ import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.kreezcraft.subterraneanwaters.ModConfig.OceanConfig;
+import com.kreezcraft.subterraneanwaters.SubH2o_Config.General.OceanConfig;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -14,7 +14,7 @@ import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 
-public class ModGenerator {
+public class SubH2o_Generator {
 	private static final IBlockState WATER = Blocks.WATER.getDefaultState();
 	private static final IBlockState AIR = Blocks.AIR.getDefaultState();
 
@@ -37,9 +37,9 @@ public class ModGenerator {
 	public void generate(ChunkPrimer primer, World world, Random random, int chunkX, int chunkZ,
 			IChunkGenerator generator) {
 	
-		if (ArrayUtils.contains(ModConfig.dimensions, world.provider.getDimension())) {
+		if (ArrayUtils.contains(SubH2o_Config.general.dimensions, world.provider.getDimension())) {
 
-			config = ModConfig.map.get(world.provider.getDimension());
+			config = SubH2o_Config.map.get(world.provider.getDimension());
 
 			if (!initialized) {
 				this.random = new Random(world.getSeed());

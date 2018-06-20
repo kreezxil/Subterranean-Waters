@@ -1,5 +1,6 @@
 package com.kreezcraft.subterraneanwaters;
 
+import java.io.File;
 import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -17,16 +18,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "subterranaenwaters", name = "Subterranean Waters", version = "@VERSION@", acceptableRemoteVersions = "*")
-public class SubterraneanWaters {
-	public static final ModGenerator generator = new ModGenerator();
+@Mod(modid = SubH2o.MODID, name = SubH2o.NAME, version = SubH2o.VERSION, acceptableRemoteVersions = "*")
+public class SubH2o {
+	public static final String NAME = "Subterranean Waters";
+	public static final String MODID = "subterraneanwaters";
+	public static final String VERSION = "@VERSION@";
+	
+	public static final SubH2o_Generator generator = new SubH2o_Generator();
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-
-		ModConfig.load(config, event.getModConfigurationDirectory());
-
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
@@ -36,7 +37,7 @@ public class SubterraneanWaters {
 		BlockPos pos = new BlockPos(event.getX() << 4, 1, event.getZ() << 4);
 		Biome theBiome = theChunk.getBiome(pos, event.getWorld().getBiomeProvider());
 		//System.out.println("Biome: ["+theBiome.getBiomeName()+"]");
-		if (!ArrayUtils.contains(ModConfig.exclude, theBiome.getBiomeName()))
+		if (!ArrayUtils.contains(SubH2o_Config.general.exclude, theBiome.getBiomeName()))
 			generator.generate(event.getPrimer(), event.getWorld(), new Random(event.getWorld().getSeed()),
 					event.getX(), event.getZ(), event.getGenerator());
 	}
