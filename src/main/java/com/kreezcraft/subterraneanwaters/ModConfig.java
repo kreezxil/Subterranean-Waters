@@ -19,7 +19,7 @@ public class ModConfig {
 	public static void load(Configuration config, File configDir) {
 		config.load();
 
-		exclude = config.getStringList("Biomes", "Exclude these Biomes. Use title case.", new String[] {"Deep Ocean","Ocean" }, "Biomes to not generate in.");
+		exclude = config.getStringList("Biomes", "Exclude these Biomes. Use lower case.", new String[] {"deep ocean","ocean" }, "Biomes to not generate in.");
 		
 		dimensions = config
 				.get("Generation", "Dimension IDs", new int[] { 0 },
