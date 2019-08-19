@@ -12,13 +12,17 @@ import net.minecraftforge.fml.common.FMLLog;
 
 public class ModConfig {
 	public static int[] dimensions;
+	public static int chanceGenerate;
 	public static String[] exclude;
 	public static OceanConfig[] configs;
 	public static Map<Integer, OceanConfig> map = new HashMap<>();
 
+	@SuppressWarnings("deprecation")
 	public static void load(Configuration config, File configDir) {
 		config.load();
 
+		chanceGenerate = config.getInt("chanceGenerate", "General", 25, 0, 100, "25% chance by default, set to 0 to disable, max is 100");
+		
 		exclude = config.getStringList("Biomes", "Exclude these Biomes. Use lower case.", new String[] {"deep ocean","ocean" }, "Biomes to not generate in.");
 		
 		dimensions = config

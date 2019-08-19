@@ -36,6 +36,12 @@ public class ModGenerator {
 
 	public void generate(ChunkPrimer primer, World world, Random random, int chunkX, int chunkZ,
 			IChunkGenerator generator) {
+		
+		//possibly dirty evil kludge to implement a chance to generate and I'm not sure how it's gonna play out
+		// -- Kreezxil 8 19 2019
+		
+		int chance = (int)Math.random() * 100;
+		if(chance>ModConfig.chanceGenerate) return;
 	
 		if (ArrayUtils.contains(ModConfig.dimensions, world.provider.getDimension())) {
 
