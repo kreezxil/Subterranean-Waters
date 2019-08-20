@@ -23,7 +23,7 @@ public class ModConfig {
 
 		chanceGenerate = config.getInt("chanceGenerate", "General", 25, 0, 100, "25% chance by default, set to 0 to disable, max is 100");
 		
-		exclude = config.getStringList("Biomes", "Exclude these Biomes. Use lower case.", new String[] {"deep ocean","ocean" }, "Biomes to not generate in.");
+		exclude = config.getStringList("Biomes", "Exclude these Biomes. Use lower case.", new String[] {"deep_ocean","ocean","frozen_ocean","river","frozen_river","swampland","mutated_swampland" }, "Biomes to not generate in.");
 		
 		dimensions = config
 				.get("Generation", "Dimension IDs", new int[] { 0 },

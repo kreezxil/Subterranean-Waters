@@ -159,6 +159,10 @@ public class ModGenerator {
 									IBlockState block = worldY > config.liquidLevel ? AIR : WATER;
 									
 									//System.out.println("XYZ="+worldX+","+worldY+","+worldZ);
+									
+									/*if(primer.getBlockState(worldX, worldY+1, worldZ)==WATER) {
+										block = WATER;
+									}*/
 
 									primer.setBlockState(worldX, worldY, worldZ, block);
 								}
